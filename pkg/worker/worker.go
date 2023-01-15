@@ -1,6 +1,8 @@
 package worker
 
 import (
+	"time"
+
 	"github.com/rknizzle/simplemapreduce/pkg/storage"
 )
 
@@ -19,8 +21,18 @@ func (w *Worker) completeTask() {
 	w.coordClient.callCompleteTask()
 }
 
-func (w *Worker) startTask() {
-	// TODO:
+func (w *Worker) startTask(jobID string, taskID string, plugin string, inputs []string, isMapTask bool, isReduceTask bool) {
+	// download input(s)
+	// download plugin
+	// if reduce task: sort & combine inputs
+	// call plugin code on input
+	// write the output to a file
+	// w.storage.Write()
+	time.Sleep(1 * time.Second)
+	// TODO: does the output all get combined into 1 output file at the end? How does that combining
+	// happen? Append to the result?
+	output := "TODO"
+	w.completeTask(output, jobID, taskID)
 }
 
 type keyValue struct {
