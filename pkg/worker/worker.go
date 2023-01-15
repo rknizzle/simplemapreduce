@@ -14,11 +14,16 @@ type Worker struct {
 
 // coordinatorClient defines how the worker should communicate with the coordinator node
 type coordinatorClient interface {
-	callCompleteTask()
+	callCompleteTask(output string, jobID string, taskID string) error
 }
 
-func (w *Worker) completeTask() {
-	w.coordClient.callCompleteTask()
+func (w *Worker) completeTask(output string, jobID string, taskID string) error {
+	err := w.coordClient.callCompleteTask(output, jobID, taskID)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (w *Worker) startTask(jobID string, taskID string, plugin string, inputs []string, isMapTask bool, isReduceTask bool) {
