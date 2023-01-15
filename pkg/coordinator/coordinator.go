@@ -1,6 +1,8 @@
 package coordinator
 
 import (
+	"time"
+
 	"github.com/rknizzle/simplemapreduce/pkg/storage"
 )
 
@@ -24,4 +26,38 @@ func (c *Coordinator) StartJob(plugin string, inputs []string) (*Job, error) {
 
 	c.Jobs = append(c.Jobs, job)
 	return job, nil
+}
+
+func (c Coordinator) ProcessJobLoop() {
+	for {
+
+		for _, job := range c.Jobs {
+
+			for job.HasTaskAvailable() {
+
+				worker := c.workerAvailable()
+				if worker == nil {
+					break
+				}
+
+				task := job.AvailableTask()
+
+				worker.sendTaskToWorker(task)
+
+				task.IsBeingProcessed = true
+			}
+		}
+
+		time.Sleep(time.Millisecond * 100)
+	}
+}
+
+func (c *Coordinator) workerAvailable() *WorkerState {
+	for _, workerState := range c.Workers {
+		if workerState.isHealthy && !workerState.isBusy {
+			return workerState
+		}
+	}
+
+	return nil
 }
