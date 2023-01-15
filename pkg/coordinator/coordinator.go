@@ -7,11 +7,21 @@ import (
 // Coordinator contains the logic of the Coordinator server that keeps track of jobs and
 // distributing the tasks of a job to all of the worker nodes
 type Coordinator struct {
-	workers []*WorkerState
-	jobs    []*Job
-	storage storage.Storage
+	Workers []*WorkerState
+	Jobs    []*Job
+	Storage storage.Storage
 }
 
-func (c *Coordinator) startJob() {
-	// TODO
+func NewCoordinator(s storage.Storage) Coordinator {
+	return Coordinator{Storage: s}
+}
+
+func (c *Coordinator) StartJob(plugin string, inputs []string) (*Job, error) {
+	job, err := NewJob(plugin, inputs)
+	if err != nil {
+		return nil, err
+	}
+
+	c.Jobs = append(c.Jobs, job)
+	return job, nil
 }
