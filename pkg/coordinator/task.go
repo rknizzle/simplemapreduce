@@ -12,6 +12,8 @@ type Task struct {
 	IsBeingProcessed bool
 	IsComplete       bool
 	Outputs          []string
+	IsMapTask        bool
+	IsReduceTask     bool
 }
 
 func NewTask(jobID string, plugin string, inputs []string) (*Task, error) {
